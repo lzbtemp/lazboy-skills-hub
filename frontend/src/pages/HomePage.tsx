@@ -41,7 +41,7 @@ export default function HomePage() {
           <img
             src="/lazboy-logo.png"
             alt="La-Z-Boy"
-            className="h-10 mx-auto mb-6 brightness-0 invert"
+            className="h-16 mx-auto mb-6 brightness-0 invert"
           />
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
             Skills Repository
