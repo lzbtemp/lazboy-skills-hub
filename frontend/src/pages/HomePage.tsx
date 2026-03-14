@@ -1,10 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
-  Search, ArrowRight, Code2, Server, TestTube2, Shield,
-  BarChart3, Brain, Layout, Database, Cloud, FileText, Palette, Briefcase
+  Search, ArrowRight, Server, Layers, Monitor,
+  Brain, Palette, Settings, TestTube2, ShieldCheck
 } from 'lucide-react';
-import { useCategories } from '../hooks/useCategories';
 import { useSkills } from '../hooks/useSkills';
 import SkillGrid from '../components/skills/SkillGrid';
 import { SplineScene } from '@/components/ui/splite';
@@ -12,25 +11,21 @@ import { Spotlight } from '@/components/ui/spotlight';
 import { Typewriter } from '@/components/ui/typewriter-text';
 import { TextRotate } from '@/components/ui/text-rotate';
 
-const ICON_MAP: Record<string, React.ElementType> = {
-  code: Code2,
-  server: Server,
-  'check-circle': TestTube2,
-  shield: Shield,
-  database: BarChart3,
-  cpu: Brain,
-  layout: Layout,
-  terminal: Database,
-  cloud: Cloud,
-  'file-text': FileText,
-  figma: Palette,
-  briefcase: Briefcase,
-};
+const ROLES = [
+  { label: 'FRONTEND', icon: Monitor, query: 'frontend' },
+  { label: 'BACKEND', icon: Server, query: 'backend' },
+  { label: 'FULL STACK', icon: Layers, query: 'full stack' },
+  { label: 'DEVOPS', icon: Settings, query: 'devops' },
+  { label: 'DATA/AI', icon: Brain, query: 'data ai' },
+  { label: 'DESIGNER', icon: Palette, query: 'design' },
+  { label: 'QA/TESTING', icon: TestTube2, query: 'testing' },
+  { label: 'SECURITY', icon: ShieldCheck, query: 'security' },
+];
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { data: categories } = useCategories();
   const { data: featuredSkills } = useSkills({ perPage: 6, sort: 'newest' });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -116,32 +111,37 @@ export default function HomePage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        {/* Categories */}
-        {categories && (
-          <section className="mb-20 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-            <div className="flex items-center gap-4 mb-10">
-              <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Browse by Category</h2>
-              <div className="flex-1 h-px bg-gradient-to-r from-[#1B3A6B]/15 to-transparent" />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {categories.map((cat) => {
-                const Icon = ICON_MAP[cat.icon || ''] || Code2;
-                return (
-                  <Link
-                    key={cat.id}
-                    to={`/browse?category=${cat.slug}`}
-                    className="group flex flex-col items-center gap-3 p-6 bg-white rounded-2xl border border-gray-100 card-hover hover:border-[#1B3A6B]/20 text-center"
-                  >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1B3A6B]/10 to-[#1B3A6B]/5 flex items-center justify-center group-hover:from-[#1B3A6B]/20 group-hover:to-[#1B3A6B]/10 transition-all group-hover:scale-110 duration-300">
-                      <Icon className="w-5.5 h-5.5 text-[#1B3A6B]" />
-                    </div>
-                    <span className="text-sm font-medium text-[#2C2C2C]/80 group-hover:text-[#1B3A6B] transition-colors">{cat.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        )}
+        {/* Role Selector */}
+        <section className="mb-20 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+          <div className="flex items-center gap-3 mb-8">
+            <Settings className="w-5 h-5 text-[#2C2C2C]/40" />
+            <h2 className="text-sm font-bold text-[#2C2C2C]/60 uppercase tracking-[0.15em]">I am a...</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {ROLES.map((role) => {
+              const isActive = selectedRole === role.query;
+              return (
+                <button
+                  key={role.label}
+                  onClick={() => {
+                    setSelectedRole(isActive ? null : role.query);
+                    navigate(`/browse?q=${encodeURIComponent(role.query)}`);
+                  }}
+                  className={`group flex flex-col items-center gap-3 px-4 py-6 rounded-xl border-2 transition-all duration-200 ${
+                    isActive
+                      ? 'bg-[#1B3A6B] border-[#1B3A6B] text-white shadow-lg shadow-[#1B3A6B]/20'
+                      : 'bg-white border-gray-200 text-[#2C2C2C] hover:border-[#1B3A6B]/30 hover:shadow-md'
+                  }`}
+                >
+                  <role.icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-[#2C2C2C]/50 group-hover:text-[#1B3A6B]'} transition-colors`} />
+                  <span className={`text-xs font-bold tracking-wide ${isActive ? 'text-white' : 'text-[#2C2C2C]/70'}`}>
+                    {role.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Featured Skills */}
         {featuredSkills && featuredSkills.data.length > 0 && (

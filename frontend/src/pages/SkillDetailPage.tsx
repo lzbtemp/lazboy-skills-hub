@@ -4,6 +4,7 @@ import { Tag as TagIcon, User, ChevronRight, Package } from 'lucide-react';
 import { fetchSkillBySlug } from '../api/github';
 import SkillContentViewer from '../components/skills/SkillContentViewer';
 import InstallInstructions from '../components/skills/InstallInstructions';
+import FileExplorer from '../components/skills/FileExplorer';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function SkillDetailPage() {
@@ -60,7 +61,7 @@ export default function SkillDetailPage() {
                 <h1 className="text-3xl font-bold text-white tracking-tight">{skill.name}</h1>
                 <span className="text-xs text-white/30 bg-white/[0.08] px-2.5 py-0.5 rounded-full backdrop-blur-sm">v{skill.version}</span>
               </div>
-              <p className="text-white/50 text-lg font-light">{skill.description}</p>
+              <p className="text-white text-base font-normal line-clamp-3 max-w-2xl leading-relaxed">{skill.description}</p>
               <div className="flex items-center gap-5 text-sm text-white/40 mt-4">
                 <span className="inline-flex items-center gap-1.5">
                   <User className="w-4 h-4" />
@@ -105,8 +106,9 @@ export default function SkillDetailPage() {
 
           {/* Sidebar */}
           <aside className="w-full lg:w-72 shrink-0">
-            <div className="sticky top-24">
+            <div className="sticky top-24 space-y-4">
               <InstallInstructions slug={skill.slug} content={skill.content} />
+              <FileExplorer skillSlug={skill.slug} />
             </div>
           </aside>
         </div>

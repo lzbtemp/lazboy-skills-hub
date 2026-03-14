@@ -40,26 +40,31 @@ function parseFrontmatter(markdown: string): { meta: SkillFrontmatter; content: 
   return { meta: { name, description, version, category, tags }, content };
 }
 
-// Derive a category from the skill name
+// Derive a category aligned with role selector
 function deriveCategory(skillName: string): string {
-  if (skillName.includes('brand') || skillName.includes('design')) return 'Design';
-  if (skillName.includes('test') || skillName.includes('playwright')) return 'Testing';
-  if (skillName.includes('python') || skillName.includes('code')) return 'Development';
-  if (skillName.includes('logging') || skillName.includes('deploy')) return 'DevOps';
-  if (skillName.includes('standard') || skillName.includes('skill')) return 'Standards';
-  return 'Development';
+  const name = skillName.toLowerCase();
+  if (name.includes('brand') || name.includes('design') || name.includes('ui') || name.includes('css')) return 'Designer';
+  if (name.includes('test') || name.includes('playwright') || name.includes('qa')) return 'QA/Testing';
+  if (name.includes('security') || name.includes('scan') || name.includes('vuln')) return 'Security';
+  if (name.includes('logging') || name.includes('deploy') || name.includes('docker') || name.includes('ci')) return 'DevOps';
+  if (name.includes('data') || name.includes('ml') || name.includes('ai')) return 'Data/AI';
+  if (name.includes('react') || name.includes('vue') || name.includes('angular') || name.includes('frontend')) return 'Frontend';
+  if (name.includes('api') || name.includes('server') || name.includes('backend') || name.includes('database')) return 'Backend';
+  return 'Full Stack';
 }
 
 function deriveTags(skillName: string, description: string): string[] {
   const tags: string[] = [];
   const text = `${skillName} ${description}`.toLowerCase();
-  if (text.includes('python')) tags.push('python');
-  if (text.includes('brand') || text.includes('design')) tags.push('branding');
-  if (text.includes('test') || text.includes('playwright')) tags.push('testing');
-  if (text.includes('logging') || text.includes('observability')) tags.push('observability');
-  if (text.includes('standard')) tags.push('standards');
-  if (text.includes('claude') || text.includes('cursor') || text.includes('agent')) tags.push('ai-agents');
-  return tags.length > 0 ? tags : ['skill'];
+  if (text.includes('frontend') || text.includes('react') || text.includes('vue') || text.includes('css')) tags.push('Frontend');
+  if (text.includes('backend') || text.includes('api') || text.includes('server') || text.includes('database')) tags.push('Backend');
+  if (text.includes('devops') || text.includes('deploy') || text.includes('docker') || text.includes('logging')) tags.push('DevOps');
+  if (text.includes('test') || text.includes('playwright') || text.includes('qa')) tags.push('QA/Testing');
+  if (text.includes('security') || text.includes('scan') || text.includes('vuln')) tags.push('Security');
+  if (text.includes('data') || text.includes('ml') || text.includes('ai')) tags.push('Data/AI');
+  if (text.includes('brand') || text.includes('design') || text.includes('ui')) tags.push('Designer');
+  if (text.includes('python') || text.includes('code') || text.includes('standard')) tags.push('Full Stack');
+  return tags.length > 0 ? tags : ['Full Stack'];
 }
 
 export async function fetchSkillList(): Promise<string[]> {
@@ -92,11 +97,14 @@ export interface GitHubSkill {
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
-  Design: 'figma',
-  Testing: 'check-circle',
-  Development: 'code',
-  DevOps: 'server',
-  Standards: 'file-text',
+  Frontend: 'monitor',
+  Backend: 'server',
+  'Full Stack': 'layers',
+  DevOps: 'settings',
+  'Data/AI': 'cpu',
+  Designer: 'figma',
+  'QA/Testing': 'check-circle',
+  Security: 'shield',
 };
 
 function toSkill(skillName: string, markdown: string, index: number): GitHubSkill {
@@ -168,6 +176,44 @@ export async function searchSkills(query: string): Promise<GitHubSkill[]> {
     s.description.toLowerCase().includes(q) ||
     s.tags.some(t => t.name.toLowerCase().includes(q))
   );
+}
+
+export interface FileTreeItem {
+  name: string;
+  type: 'file' | 'dir';
+  children?: FileTreeItem[];
+}
+
+export async function fetchSkillFileTree(skillName: string): Promise<FileTreeItem[]> {
+  const res = await fetch(`${API_BASE}/contents/${SKILLS_PATH}/${skillName}?ref=${GITHUB_BRANCH}`);
+  if (!res.ok) return [];
+  const items: GitHubContent[] = await res.json();
+
+  const tree: FileTreeItem[] = [];
+  for (const item of items) {
+    if (item.name === 'SKILL.md') {
+      tree.push({ name: item.name, type: 'file' });
+    } else if (item.type === 'dir') {
+      // Fetch subdirectory contents
+      const subRes = await fetch(`${API_BASE}/contents/${item.path}?ref=${GITHUB_BRANCH}`);
+      const subItems: GitHubContent[] = subRes.ok ? await subRes.json() : [];
+      tree.push({
+        name: item.name,
+        type: 'dir',
+        children: subItems.map(sub => ({ name: sub.name, type: sub.type })),
+      });
+    } else {
+      tree.push({ name: item.name, type: 'file' });
+    }
+  }
+
+  // Sort: directories first, then files
+  tree.sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+
+  return tree;
 }
 
 export function getCategories(skills: GitHubSkill[]) {
