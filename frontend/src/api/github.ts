@@ -217,6 +217,95 @@ export async function fetchSkillFileTree(skillName: string): Promise<FileTreeIte
   return tree;
 }
 
+// ── Marketplace: External skill sources ──
+
+export interface MarketplaceSource {
+  org: string;
+  repo: string;
+  displayName: string;
+  color: string;
+  url: string;
+}
+
+export interface MarketplaceSkill {
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  source: MarketplaceSource;
+  githubUrl: string;
+  installCommand: string;
+}
+
+export const MARKETPLACE_SOURCES: MarketplaceSource[] = [
+  {
+    org: 'anthropics',
+    repo: 'skills',
+    displayName: 'Anthropic',
+    color: '#D97757',
+    url: 'https://github.com/anthropics/skills',
+  },
+  {
+    org: 'vercel-labs',
+    repo: 'agent-skills',
+    displayName: 'Vercel Labs',
+    color: '#000000',
+    url: 'https://github.com/vercel-labs/agent-skills',
+  },
+];
+
+const marketplaceCache = new Map<string, MarketplaceSkill[]>();
+
+export async function fetchMarketplaceSkills(source: MarketplaceSource): Promise<MarketplaceSkill[]> {
+  const cacheKey = `${source.org}/${source.repo}`;
+  if (marketplaceCache.has(cacheKey)) return marketplaceCache.get(cacheKey)!;
+
+  const apiBase = `https://api.github.com/repos/${source.org}/${source.repo}`;
+  const rawBase = `https://raw.githubusercontent.com/${source.org}/${source.repo}/main`;
+
+  // Fetch skill directories
+  const res = await fetch(`${apiBase}/contents/skills?ref=main`);
+  if (!res.ok) return [];
+  const items: GitHubContent[] = await res.json();
+  const dirs = items.filter(i => i.type === 'dir');
+
+  // Fetch SKILL.md for each
+  const skills = await Promise.all(
+    dirs.map(async (dir): Promise<MarketplaceSkill | null> => {
+      try {
+        const mdRes = await fetch(`${rawBase}/skills/${dir.name}/SKILL.md`);
+        if (!mdRes.ok) return null;
+        const markdown = await mdRes.text();
+        const { meta } = parseFrontmatter(markdown);
+        return {
+          name: meta.name || dir.name,
+          slug: dir.name,
+          description: meta.description || '',
+          category: meta.category || 'General',
+          source,
+          githubUrl: `https://github.com/${source.org}/${source.repo}/tree/main/skills/${dir.name}`,
+          installCommand: `/install ${source.org}/${source.repo}/${dir.name}`,
+        };
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  const result = skills.filter((s): s is MarketplaceSkill => s !== null);
+  marketplaceCache.set(cacheKey, result);
+  return result;
+}
+
+export async function fetchAllMarketplaceSkills(): Promise<{ source: MarketplaceSource; skills: MarketplaceSkill[] }[]> {
+  return Promise.all(
+    MARKETPLACE_SOURCES.map(async (source) => ({
+      source,
+      skills: await fetchMarketplaceSkills(source),
+    }))
+  );
+}
+
 export function getCategories(skills: GitHubSkill[]) {
   const categoryMap = new Map<string, { category: GitHubSkill['category']; count: number }>();
   for (const skill of skills) {

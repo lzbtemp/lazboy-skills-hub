@@ -5,6 +5,7 @@ import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import BrowsePage from './pages/BrowsePage';
 import SkillDetailPage from './pages/SkillDetailPage';
+import MarketplacePage from './pages/MarketplacePage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -26,6 +27,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/browse" element={<BrowsePage />} />
+              <Route path="/marketplace" element={<MarketplacePage />} />
               <Route path="/skills/:slug" element={<SkillDetailPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>

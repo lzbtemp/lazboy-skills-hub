@@ -1,10 +1,11 @@
 import React from 'react';
-import { IoHomeOutline, IoGridOutline, IoSearchOutline, IoRocketOutline } from 'react-icons/io5';
+import { IoHomeOutline, IoGridOutline, IoSearchOutline, IoRocketOutline, IoStorefrontOutline } from 'react-icons/io5';
 
 const menuItems = [
   { title: 'Home', href: '/', icon: <IoHomeOutline />, gradientFrom: '#1B3A6B', gradientTo: '#2C2C2C' },
   { title: 'Browse', href: '/browse', icon: <IoGridOutline />, gradientFrom: '#C0392B', gradientTo: '#1B3A6B' },
-  { title: 'Search', href: '/browse?q=', icon: <IoSearchOutline />, gradientFrom: '#8FAF8A', gradientTo: '#1B3A6B' },
+  { title: 'Market', href: '/marketplace', icon: <IoStorefrontOutline />, gradientFrom: '#8FAF8A', gradientTo: '#1B3A6B' },
+  { title: 'Search', href: '/browse?q=', icon: <IoSearchOutline />, gradientFrom: '#1B3A6B', gradientTo: '#8FAF8A' },
   { title: 'Latest', href: '/browse?sort=newest', icon: <IoRocketOutline />, gradientFrom: '#1B3A6B', gradientTo: '#C0392B' },
 ];
 
