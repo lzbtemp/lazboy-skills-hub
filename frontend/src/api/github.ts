@@ -284,7 +284,7 @@ export async function fetchMarketplaceSkills(source: MarketplaceSource): Promise
           category: meta.category || 'General',
           source,
           githubUrl: `https://github.com/${source.org}/${source.repo}/tree/main/skills/${dir.name}`,
-          installCommand: `/install ${source.org}/${source.repo}/${dir.name}`,
+          installCommand: `npx skills add https://github.com/${source.org}/${source.repo} --skill ${dir.name}`,
         };
       } catch {
         return null;
@@ -304,6 +304,37 @@ export async function fetchAllMarketplaceSkills(): Promise<{ source: Marketplace
       skills: await fetchMarketplaceSkills(source),
     }))
   );
+}
+
+export interface MarketplaceSkillDetail extends MarketplaceSkill {
+  content: string;
+  version: string;
+}
+
+export async function fetchMarketplaceSkillDetail(org: string, repo: string, skillSlug: string): Promise<MarketplaceSkillDetail | null> {
+  const rawBase = `https://raw.githubusercontent.com/${org}/${repo}/main`;
+  const source = MARKETPLACE_SOURCES.find(s => s.org === org && s.repo === repo);
+  if (!source) return null;
+
+  try {
+    const res = await fetch(`${rawBase}/skills/${skillSlug}/SKILL.md`);
+    if (!res.ok) return null;
+    const markdown = await res.text();
+    const { meta } = parseFrontmatter(markdown);
+    return {
+      name: meta.name || skillSlug,
+      slug: skillSlug,
+      description: meta.description || '',
+      category: meta.category || 'General',
+      content: markdown,
+      version: meta.version || '1.0.0',
+      source,
+      githubUrl: `https://github.com/${org}/${repo}/tree/main/skills/${skillSlug}`,
+      installCommand: `npx skills add https://github.com/${org}/${repo} --skill ${skillSlug}`,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export function getCategories(skills: GitHubSkill[]) {

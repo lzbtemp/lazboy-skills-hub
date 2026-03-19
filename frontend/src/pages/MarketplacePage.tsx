@@ -1,14 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, Terminal, Package, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Terminal, Package, Loader2, ChevronRight, ExternalLink } from 'lucide-react';
 import { fetchAllMarketplaceSkills } from '../api/github';
 import type { MarketplaceSkill, MarketplaceSource } from '../api/github';
 
 function SkillCard({ skill }: { skill: MarketplaceSkill }) {
   return (
-    <a
-      href={skill.githubUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to={`/marketplace/${skill.source.org}/${skill.source.repo}/${skill.slug}`}
       className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-[#1B3A6B]/15 hover:shadow-lg transition-all duration-300 h-full"
     >
       <div className="flex flex-col flex-1 p-5">
@@ -16,14 +15,14 @@ function SkillCard({ skill }: { skill: MarketplaceSkill }) {
           <h3 className="text-sm font-semibold text-[#1B3A6B] group-hover:text-[#C0392B] transition-colors">
             {skill.name}
           </h3>
-          <ExternalLink className="w-3.5 h-3.5 text-[#2C2C2C]/25 group-hover:text-[#1B3A6B]/50 transition-colors shrink-0 mt-0.5" />
+          <ChevronRight className="w-3.5 h-3.5 text-[#2C2C2C]/40 group-hover:text-[#1B3A6B]/70 transition-colors shrink-0 mt-0.5" />
         </div>
-        <p className="text-xs text-[#2C2C2C]/50 leading-relaxed flex-1 line-clamp-3">
+        <p className="text-xs text-[#2C2C2C]/70 leading-relaxed flex-1 line-clamp-3">
           {skill.description}
         </p>
         <div className="mt-3 flex items-center gap-2">
           {skill.category && (
-            <span className="text-[10px] uppercase tracking-wider font-medium text-[#1B3A6B]/40 bg-[#1B3A6B]/[0.04] px-2 py-0.5 rounded-full">
+            <span className="text-[10px] uppercase tracking-wider font-medium text-[#1B3A6B]/70 bg-[#1B3A6B]/[0.08] px-2 py-0.5 rounded-full">
               {skill.category}
             </span>
           )}
@@ -32,7 +31,7 @@ function SkillCard({ skill }: { skill: MarketplaceSkill }) {
       <div className="px-5 py-3 bg-[#1B3A6B]/[0.02] border-t border-gray-50 opacity-0 group-hover:opacity-100 transition-opacity">
         <code className="text-[10px] text-[#1B3A6B]/60 font-mono">{skill.installCommand}</code>
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -45,12 +44,12 @@ function ProviderSection({ source, skills }: { source: MarketplaceSource; skills
           style={{ backgroundColor: source.color }}
         />
         <h2 className="text-lg font-semibold text-[#1B3A6B]">{source.displayName}</h2>
-        <span className="text-xs text-[#2C2C2C]/30 font-light">{skills.length} skills</span>
+        <span className="text-xs text-[#2C2C2C]/60">{skills.length} skills</span>
         <a
           href={source.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto text-xs text-[#1B3A6B]/40 hover:text-[#1B3A6B]/70 transition-colors flex items-center gap-1"
+          className="ml-auto text-xs text-[#1B3A6B]/60 hover:text-[#1B3A6B]/90 transition-colors flex items-center gap-1"
         >
           View repo <ExternalLink className="w-3 h-3" />
         </a>
@@ -81,7 +80,7 @@ export default function MarketplacePage() {
           <Package className="w-8 h-8 text-[#1B3A6B]/70" />
           <h1 className="text-4xl lg:text-5xl font-bold text-[#1B3A6B] tracking-tight">Marketplace</h1>
         </div>
-        <p className="text-sm text-[#2C2C2C]/40 font-light">
+        <p className="text-sm text-[#2C2C2C]/70">
           Discover and install community-built AI agent skills from open-source providers
         </p>
       </div>
@@ -90,8 +89,8 @@ export default function MarketplacePage() {
       <div className="mb-10 bg-[#1B3A6B]/[0.03] border border-[#1B3A6B]/[0.08] rounded-xl px-5 py-4 flex items-center gap-3">
         <Terminal className="w-4 h-4 text-[#1B3A6B]/50 shrink-0" />
         <div>
-          <p className="text-xs text-[#2C2C2C]/50 mb-0.5">Install skills from any provider</p>
-          <code className="text-sm text-[#1B3A6B] font-mono font-medium">$ /install &lt;org&gt;/&lt;repo&gt;/&lt;skill-name&gt;</code>
+          <p className="text-xs text-[#2C2C2C]/70 mb-0.5">Install skills from any provider</p>
+          <code className="text-sm text-[#1B3A6B] font-mono font-medium">$ npx skills add https://github.com/&lt;org&gt;/&lt;repo&gt; --skill &lt;skill-name&gt;</code>
         </div>
       </div>
 
@@ -113,7 +112,7 @@ export default function MarketplacePage() {
       {/* Provider sections */}
       {data && (
         <div>
-          <p className="text-xs text-[#2C2C2C]/25 mb-8 uppercase tracking-widest font-light">
+          <p className="text-xs text-[#2C2C2C]/50 mb-8 uppercase tracking-widest">
             {totalSkills} skills from {data.length} providers
           </p>
           {data.map(({ source, skills }) => (

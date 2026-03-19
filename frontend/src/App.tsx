@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import BrowsePage from './pages/BrowsePage';
 import SkillDetailPage from './pages/SkillDetailPage';
 import MarketplacePage from './pages/MarketplacePage';
+import MarketplaceDetailPage from './pages/MarketplaceDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -28,6 +29,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/browse" element={<BrowsePage />} />
               <Route path="/marketplace" element={<MarketplacePage />} />
+              <Route path="/marketplace/:org/:repo/:slug" element={<MarketplaceDetailPage />} />
               <Route path="/skills/:slug" element={<SkillDetailPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
