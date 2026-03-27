@@ -1,0 +1,148 @@
+{
+  "color": {
+    "primary": {
+      "value": "#1B3A6B",
+      "type": "color",
+      "description": "Comfort Blue \u2014 logo, headings, hero bg"
+    },
+    "accent": {
+      "value": "#C0392B",
+      "type": "color",
+      "description": "Burnt Vermilion \u2014 CTAs, accents, dividers"
+    },
+    "green": {
+      "value": "#8FAF8A",
+      "type": "color",
+      "description": "Soft Celadon \u2014 secondary accent, decorative only"
+    },
+    "bg": {
+      "value": "#FAF8F5",
+      "type": "color",
+      "description": "Warm White \u2014 page and slide backgrounds"
+    },
+    "text": {
+      "value": "#2C2C2C",
+      "type": "color",
+      "description": "Charcoal \u2014 body text, captions"
+    },
+    "text-light": {
+      "value": "rgba(44,44,44,0.6)",
+      "type": "color",
+      "description": "Charcoal 60% \u2014 secondary text"
+    },
+    "white": {
+      "value": "#FFFFFF",
+      "type": "color",
+      "description": "White \u2014 reversed text on dark backgrounds"
+    },
+    "black": {
+      "value": "#000000",
+      "type": "color",
+      "description": "Black \u2014 one-color logo, fine print"
+    },
+    "legacy-red": {
+      "value": "#CC0000",
+      "type": "color",
+      "description": "La-Z-Boy Red \u2014 legacy materials only"
+    }
+  },
+  "font": {
+    "stack": {
+      "value": "'Helvetica Neue', Helvetica, Arial, sans-serif",
+      "type": "font",
+      "description": "Primary font stack"
+    },
+    "size-h1": {
+      "value": "clamp(32px, 5vw, 48px)",
+      "type": "font",
+      "description": "H1 display"
+    },
+    "size-h2": {
+      "value": "clamp(24px, 4vw, 32px)",
+      "type": "font",
+      "description": "H2 heading"
+    },
+    "size-h3": {
+      "value": "20px",
+      "type": "font",
+      "description": "H3 subheading"
+    },
+    "size-body": {
+      "value": "15px",
+      "type": "font",
+      "description": "Body copy"
+    },
+    "size-caption": {
+      "value": "12px",
+      "type": "font",
+      "description": "Caption / fine print"
+    },
+    "weight-bold": {
+      "value": "700",
+      "type": "font",
+      "description": "Bold \u2014 headings"
+    },
+    "weight-semi": {
+      "value": "600",
+      "type": "font",
+      "description": "Semi-Bold \u2014 subheadings, UI labels"
+    },
+    "weight-body": {
+      "value": "400",
+      "type": "font",
+      "description": "Regular \u2014 body text"
+    }
+  },
+  "radius": {
+    "sm": {
+      "value": "4px",
+      "type": "radius",
+      "description": "Small radius \u2014 inputs, tags"
+    },
+    "md": {
+      "value": "8px",
+      "type": "radius",
+      "description": "Medium radius \u2014 cards, buttons"
+    },
+    "lg": {
+      "value": "16px",
+      "type": "radius",
+      "description": "Large radius \u2014 panels, modals"
+    },
+    "full": {
+      "value": "9999px",
+      "type": "radius",
+      "description": "Full pill \u2014 badges, chips"
+    }
+  },
+  "spacing": {
+    "xs": {
+      "value": "4px",
+      "type": "spacing"
+    },
+    "sm": {
+      "value": "8px",
+      "type": "spacing"
+    },
+    "md": {
+      "value": "16px",
+      "type": "spacing"
+    },
+    "lg": {
+      "value": "24px",
+      "type": "spacing"
+    },
+    "xl": {
+      "value": "32px",
+      "type": "spacing"
+    },
+    "2xl": {
+      "value": "48px",
+      "type": "spacing"
+    },
+    "3xl": {
+      "value": "64px",
+      "type": "spacing"
+    }
+  }
+}
