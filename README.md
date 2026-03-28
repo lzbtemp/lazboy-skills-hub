@@ -1,69 +1,76 @@
-# La-Z-Boy Skills Repository
+# La-Z-Boy AI Hub
 
-Internal web application for discovering, publishing, and installing AI agent skills (SKILL.md files) across La-Z-Boy teams.
+Internal portal for discovering and installing AI skills, MCP servers, and tools across La-Z-Boy engineering teams.
 
 ## Tech Stack
 
-- **Backend**: Python 3.11+ / FastAPI / SQLAlchemy / SQLite
-- **Frontend**: React 18 / TypeScript / Vite / Tailwind CSS
-- **Search**: SQLite FTS5 full-text search
+- **Frontend**: React 19 / TypeScript / Vite / Tailwind CSS 4.2
+- **Data**: GitHub API (skills), static JSON (MCP servers & tools)
+- **UI**: Framer Motion, Lucide icons, glass-morphism design system
+- **Deployment**: Vercel
+
+## Features
+
+- **Skills Catalog** — Browse 29+ AI agent skills with search, category filters, and detail pages. Skills are fetched live from GitHub.
+- **MCP Servers** — 21 curated MCP server entries with config JSON copy, tool listings, and detail pages.
+- **Tools Directory** — 186+ searchable tools across all MCP servers with category filtering.
+- **Role-based Discovery** — Filter resources by role (Frontend, Backend, Full Stack, DevOps, Data/AI, Designer, QA, Security).
+- **Glass-morphism UI** — Frosted glass cards, scroll-triggered animations, responsive 3-column grid layout.
 
 ## Quick Start
 
 ### Prerequisites
 
-- Python 3.11+
 - Node.js 20+
-- pip
 
-### Install Dependencies
-
-```bash
-make install
-```
-
-### Set Up Database
+### Install & Run
 
 ```bash
-make db-upgrade
-make db-seed
+cd frontend
+npm install
+npm run dev
 ```
 
-### Run Development Servers
+The app runs at http://localhost:5173
+
+### Build
 
 ```bash
-# Run both (backend on :8000, frontend on :5173)
-make dev
-
-# Or individually
-make dev-backend
-make dev-frontend
+cd frontend
+npm run build
 ```
 
-### API Documentation
+### Lint
 
-Once the backend is running, visit: http://localhost:8000/docs
+```bash
+cd frontend
+npm run lint
+```
 
 ## Project Structure
 
 ```
-lazboy-skills/
-├── backend/          # FastAPI backend
-│   ├── app/
-│   │   ├── api/      # Route handlers
-│   │   ├── models/   # SQLAlchemy models
-│   │   ├── schemas/  # Pydantic schemas
-│   │   └── services/ # Business logic
-│   └── tests/
-├── frontend/         # React + Vite frontend
+lazboy-ai-hub/
+├── .github/workflows/   # CI pipeline (lint + build)
+├── frontend/
 │   └── src/
+│       ├── api/         # GitHub API client
 │       ├── components/
-│       ├── hooks/
-│       ├── pages/
-│       └── types/
-└── Makefile
+│       │   ├── common/  # ScrollReveal, shared components
+│       │   ├── layout/  # Header, Footer
+│       │   ├── mcp/     # McpCard, McpGrid
+│       │   ├── search/  # SearchBar
+│       │   ├── skills/  # SkillCard, SkillGrid, SkillContentViewer
+│       │   ├── tools/   # ToolCard, ToolGrid
+│       │   └── ui/      # Spline 3D, Typewriter, TextRotate, Spotlight
+│       ├── data/        # Static MCP servers & tools data
+│       ├── hooks/       # useSkills, custom hooks
+│       ├── pages/       # HomePage, BrowsePage, SkillDetailPage, McpDetailPage
+│       └── types/       # TypeScript interfaces
+├── .claude/skills/      # Agent skills (SKILL.md files)
+└── README.md
 ```
 
 ## License
 
-Internal use only - La-Z-Boy Incorporated
+Internal use only — La-Z-Boy Incorporated
