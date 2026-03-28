@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Tag as TagIcon, User, ChevronRight, Package, Blocks, Download, Calendar } from 'lucide-react';
+import { Tag as TagIcon, User, ChevronRight, Package, Blocks, Download } from 'lucide-react';
 import { fetchSkillBySlug } from '../api/github';
 import SkillContentViewer from '../components/skills/SkillContentViewer';
 import InstallInstructions from '../components/skills/InstallInstructions';
