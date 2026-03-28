@@ -67,6 +67,11 @@ export interface PaginatedResponse<T> {
 
 // ── MCP Servers ──────────────────────────────────────────────
 
+export interface McpTool {
+  name: string;
+  description: string;
+}
+
 export interface McpServer {
   id: string;
   name: string;
@@ -77,4 +82,7 @@ export interface McpServer {
   version?: string;
   capabilities?: string[];
   useCases?: string[];
+  tools?: McpTool[];
+  source?: string;
+  npmPackage?: string;
 }

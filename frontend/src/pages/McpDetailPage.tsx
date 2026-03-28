@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, Server, Zap, Lightbulb } from 'lucide-react';
+import { ChevronRight, Server, Zap, Lightbulb, Wrench, ExternalLink } from 'lucide-react';
 import mcpServers from '../data/mcp-servers';
 
 export default function McpDetailPage() {
@@ -105,6 +105,34 @@ export default function McpDetailPage() {
                 </ul>
               </div>
             )}
+
+            {/* Available Tools */}
+            {server.tools && server.tools.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <Wrench className="w-5 h-5 text-[#1B3A6B]/60" />
+                    <h2 className="text-lg font-bold text-[#1B3A6B] tracking-tight">Available Tools</h2>
+                  </div>
+                  <span className="text-xs text-[#2C2C2C]/30 font-medium">
+                    {server.tools.length} tool{server.tools.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {server.tools.map((tool, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 px-4 py-3 rounded-xl bg-[#FAF8F5] border border-gray-100/60 hover:border-[#1B3A6B]/10 transition-colors"
+                    >
+                      <code className="text-xs font-mono font-semibold text-[#1B3A6B] bg-[#1B3A6B]/8 px-2 py-0.5 rounded-md shrink-0 mt-0.5">
+                        {tool.name}
+                      </code>
+                      <span className="text-sm text-[#2C2C2C]/55 leading-relaxed">{tool.description}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar — info card */}
@@ -134,7 +162,30 @@ export default function McpDetailPage() {
                       <dd className="text-[#2C2C2C]/80 font-medium">v{server.version}</dd>
                     </div>
                   )}
+                  {server.tools && (
+                    <div>
+                      <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Tools</dt>
+                      <dd className="text-[#2C2C2C]/80 font-medium">{server.tools.length} available</dd>
+                    </div>
+                  )}
+                  {server.npmPackage && (
+                    <div>
+                      <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Package</dt>
+                      <dd className="text-xs font-mono text-[#1B3A6B]/70 break-all">{server.npmPackage}</dd>
+                    </div>
+                  )}
                 </dl>
+                {server.source && (
+                  <a
+                    href={server.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl border border-gray-100 text-sm font-medium text-[#2C2C2C]/50 hover:text-[#1B3A6B] hover:border-[#1B3A6B]/20 hover:bg-[#1B3A6B]/5 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    View Source
+                  </a>
+                )}
               </div>
             </div>
           </aside>
