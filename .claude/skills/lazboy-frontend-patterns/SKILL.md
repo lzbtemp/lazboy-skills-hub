@@ -1,10 +1,6 @@
 ---
 name: lazboy-frontend-patterns
-description: >
-  React and Next.js patterns for component composition, state management, performance
-  optimization, and accessible UI development. Use this skill when building React
-  components, managing application state, implementing data fetching, optimizing
-  render performance, handling forms, or creating accessible interactive patterns.
+description: "React and Next.js patterns for component composition, state management, performance optimization, and accessible UI development. Use this skill when building React components, managing application state, implementing data fetching, optimizing render performance, handling forms, or creating accessible interactive patterns."
 version: "1.0.0"
 category: Frontend
 tags: [react, nextjs, typescript, components, state-management, accessibility]

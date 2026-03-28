@@ -1,10 +1,6 @@
 ---
 name: lazboy-backend-patterns
-description: >
-  Architectural patterns and best practices for scalable backend applications using
-  Node.js, Express, and Next.js. Use this skill when designing APIs, implementing
-  layered architecture, optimizing database queries, adding caching, setting up
-  background jobs, structuring error handling, or building middleware.
+description: "Architectural patterns and best practices for scalable backend applications using Node.js, Express, and Next.js. Use this skill when designing APIs, implementing layered architecture, optimizing database queries, adding caching, setting up background jobs, structuring error handling, or building middleware."
 version: "1.0.0"
 category: Backend
 tags: [nodejs, express, api, architecture, caching, database]

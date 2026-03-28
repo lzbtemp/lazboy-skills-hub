@@ -1,10 +1,6 @@
 ---
 name: lazboy-coding-standards
-description: >
-  Enforce coding standards and best practices across TypeScript, JavaScript, and React
-  projects. Use this skill whenever writing new code, reviewing PRs, or refactoring
-  existing code. Triggers on: code quality, naming conventions, file organization,
-  API design, performance optimization, or testing standards.
+description: "Enforce coding standards and best practices across TypeScript, JavaScript, and React projects. Use this skill whenever writing new code, reviewing PRs, or refactoring existing code. Triggers on: code quality, naming conventions, file organization, API design, performance optimization, or testing standards."
 version: "1.0.0"
 category: Code Quality
 tags: [typescript, javascript, react, standards, best-practices]

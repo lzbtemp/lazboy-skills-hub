@@ -1,6 +1,9 @@
 ---
 name: lazboy-brand
 description: "Apply La-Z-Boy brand standards for any design, UI, document, or marketing output. Use this skill whenever creating or reviewing anything visual or written for La-Z-Boy — including agent-generated UIs, presentations, reports, emails, code with style notes, or any artifact that must match the official La-Z-Boy look and feel. Trigger on: La-Z-Boy style, brand guidelines, company colors, official font, logo usage, brand-compliant, on-brand, use our brand, or any request to create a file (docx, pptx, html, jsx, css) for La-Z-Boy internal or external use. Also trigger when generating React components, HTML pages, slide decks, or email templates for La-Z-Boy — even if the user doesn't explicitly mention brand guidelines."
+version: "1.0.0"
+category: Designer
+tags: [designer, brand, ui, design-system, style-guide]
 ---
 
 # La-Z-Boy Brand Skill
@@ -21,6 +24,7 @@ Always apply this skill before producing any visual or written deliverable for L
 - `scripts/generate_tokens.py` — output brand design tokens as CSS, JSON, or Tailwind config
 
 **Assets — use as base templates:**
+- `assets/logos/` — official logo files in multiple sizes (copy into your project)
 - `assets/brand-tokens.json` — design tokens ready for Tailwind / Figma / Style Dictionary
 - `assets/component-base.tsx` — React component with all brand variables pre-applied
 - `assets/email-template.html` — pre-styled HTML email base
@@ -38,9 +42,23 @@ The distinctive "L", "Z", and hyphens are signature elements and must never be a
 - Sentence case only — never ALL CAPS or altered wording
 
 **Logo usage rules**
-- **NEVER recreate the logo as SVG text, CSS, or code** — always download the official asset
-- Download from: https://brandguidelines.la-z-boy.com/89f81758c/p/73dcba-primary-logo
-- Save as `lazboy-logo.png` in the project's public/static assets directory
+- **Never recreate the logo as SVG text, CSS, or code** — handcrafted reproductions always drift from the approved wordmark geometry, and code-generated logos create legal risk around trademark accuracy. Always use the bundled asset files.
+- **Logo files are available via GitHub raw URL.** Do NOT use read/write tools to copy PNGs — binary files get corrupted. Instead, use a shell command:
+  ```bash
+  # Standard web header (400w) — recommended for most projects
+  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png" -o public/lazboy-logo.png
+
+  # Compact (200w) — for sidebar, footer
+  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-200w.png" -o public/lazboy-logo.png
+
+  # Full resolution (3168x1129) — for print/high-DPI
+  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy.png" -o public/lazboy-logo.png
+
+  # Small badge (80w)
+  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-80w.png" -o public/lazboy-logo.png
+  ```
+- **IMPORTANT:** Always use `curl`, `cp`, or `wget` to copy logo files. Never use file read/write tools — they corrupt binary PNG data.
+- Adjust the output path (`public/`, `static/`, `src/assets/`) to match your project structure
 - Reference via `<img src="/lazboy-logo.png" alt="La-Z-Boy" />`
 - For white/reversed on dark backgrounds: add CSS `brightness-0 invert`
 - Use approved one-color variants (Comfort Blue or Black) when full color isn't available
@@ -129,55 +147,15 @@ Never substitute with a generic script font — use only the official asset file
 
 ## 5. Design Quality Standards
 
-These guidelines ensure La-Z-Boy digital outputs feel polished, distinctive, and intentional — not generic or cookie-cutter. Apply brand colors and typography as defined above, but use these techniques to elevate the execution.
+La-Z-Boy's aesthetic direction is **luxury editorial** — clean but warm, confident whitespace, dramatic type scale, and atmospheric depth. Think high-end furniture catalog meets modern SaaS dashboard. Every output should feel crafted, not templated.
 
-### Design Thinking (before coding)
-- **Purpose**: What problem does this interface solve? Who uses it?
-- **Tone**: La-Z-Boy's aesthetic direction is **luxury editorial** — clean but warm, confident whitespace, dramatic type scale, rich micro-interactions, and atmospheric depth. Think high-end furniture catalog meets modern SaaS dashboard.
-- **Differentiation**: What makes this memorable? Every La-Z-Boy UI should feel crafted, not templated.
+**Core principles:**
+- Use brand-colored shadows (Comfort Blue at low opacity), never generic gray
+- Use gradients and subtle textures — never flat solid backgrounds
+- Animate all interactive state changes (200–300ms) — abrupt jumps break the comfort feeling
+- Give layouts room to breathe — generous spacing echoes the brand identity
 
-### Motion & Animation
-- **Orchestrate page load**: Use staggered `animation-delay` for a cascading reveal effect. One well-orchestrated entrance creates more impact than scattered micro-interactions.
-- **Hover states**: Cards and interactive elements should respond with lift (`translateY(-3px)`), shadow deepening, and color transitions. Use `cubic-bezier(0.22, 1, 0.36, 1)` for smooth, spring-like easing.
-- **Scroll-triggered reveals**: Use Intersection Observer to animate sections into view as the user scrolls — not all at once on mount.
-- **Transitions**: All interactive state changes (hover, focus, active) should have `transition` — never abrupt jumps. 200–300ms is the sweet spot.
-- **Restraint**: Match animation complexity to the context. Internal tools need subtle polish, not pyrotechnics.
-
-### Shadows & Depth
-Use brand-colored shadows instead of generic gray:
-```css
---shadow-card:       0 1px 3px rgba(27, 58, 107, 0.04), 0 1px 2px rgba(27, 58, 107, 0.02);
---shadow-card-hover: 0 20px 40px -12px rgba(27, 58, 107, 0.15), 0 8px 16px -8px rgba(27, 58, 107, 0.08);
---shadow-glow:       0 0 40px -8px rgba(27, 58, 107, 0.12);
-```
-Shadows should use Comfort Blue (`#1B3A6B`) at low opacity, not black or gray. This creates a cohesive, branded depth effect.
-
-### Backgrounds & Atmosphere
-- **Never default to flat solid colors** — use gradients within the brand palette (e.g., `from-[#1B3A6B] via-[#152f58] to-[#0f2140]` for hero sections)
-- **Noise/grain textures**: Subtle SVG noise overlays at 2–4% opacity add tactile warmth that echoes the furniture brand
-- **Geometric patterns**: Dot grids, circles, or rounded rectangles at very low opacity (3–6%) create visual interest without distraction
-- **Glass-morphism**: `backdrop-blur` with semi-transparent brand colors works well for overlays, search bars, and floating elements on dark backgrounds
-
-### Spatial Composition & Layout
-- **Prefer asymmetric hero layouts** — split content (text left, visual right) over centered text blocks
-- **Generous negative space**: La-Z-Boy's comfort identity should breathe. Use `py-16 lg:py-20` or more for sections, not cramped `py-8`
-- **Decorative accents**: Gradient lines, accent stripes (thin gradient bar at card tops), and angled clip-path edges add editorial polish
-- **Grid-breaking moments**: Feature a hero card spanning 2 columns, or use offset positioning to break strict grid monotony
-
-### Typography Expressiveness
-While Helvetica Neue is mandatory, maximize its range:
-- **Dramatic scale contrast**: Hero headings at `text-6xl lg:text-7xl` with `tracking-tight leading-[0.95]` feel editorial, not generic
-- **Weight contrast**: Bold (700) headings against Light/Regular (300/400) body text creates strong visual hierarchy
-- **Letter-spacing variety**: `tracking-tight` for large display text, `tracking-[0.15em] uppercase` for small labels and section headers
-- **Font size tokens should use `clamp()`** for fluid responsive scaling
-
-### Anti-Patterns to Avoid
-- ❌ Flat, evenly-spaced grids with no visual hierarchy
-- ❌ Cards that all look identical — vary treatments for featured vs. regular items
-- ❌ Generic gray shadows (`rgba(0,0,0,0.1)`) — always use brand-colored shadows
-- ❌ Abrupt state changes without transitions
-- ❌ Cookie-cutter layouts that feel AI-generated — every page should feel intentionally designed
-- ❌ Timid color application — be confident with Comfort Blue and use Burnt Vermilion as a sharp accent, not sprinkled everywhere equally
+> Read `references/design-quality.md` for detailed patterns on motion, shadows, backgrounds, layout composition, and typography — especially when building hero sections, dashboards, or any polished UI.
 
 ---
 
@@ -224,14 +202,14 @@ Use `assets/component-base.tsx` as the starting point for any React component.
 - Apply motion and depth guidelines from Section 5 — every component should feel polished
 
 ### DOCX / Word Documents
-- Consult the `docx` skill for file creation
+Use `python-docx` or the available file-creation tool. Apply these styles:
 - Heading 1/2: Comfort Blue (`#1B3A6B`), Helvetica Neue Bold
 - Body: Charcoal (`#2C2C2C`), Helvetica Neue Regular
 - Background: Warm White pages
 - Accent lines / callout boxes: Burnt Vermilion (`#C0392B`) border, sparingly
 
 ### PPTX / Presentations
-- Consult the `pptx` skill for file creation
+Use `python-pptx` or the available file-creation tool. Apply these styles:
 - Title slides: Comfort Blue background, white title text
 - Content slides: Warm White background, Comfort Blue headings
 - Max 2 accent colors per slide
@@ -282,6 +260,7 @@ It will flag: off-brand hex values, non-approved fonts, missing CSS variables.
 | Resource | Path | When to use |
 |----------|------|-------------|
 | Full color specs (Pantone, CMYK, WCAG) | `references/colors.md` | Print production, accessibility review |
+| Logo files (multiple sizes) | `assets/logos/` | Copy into your project's public directory |
 | Logo variants and file sourcing | `references/logo-assets.md` | Any time you need to place a logo |
 | Font licensing and web setup | `references/typography.md` | Setting up a new web project or doc template |
 | Design tokens (JSON) | `assets/brand-tokens.json` | Tailwind config, Figma, Style Dictionary |

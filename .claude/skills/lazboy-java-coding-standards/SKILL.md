@@ -1,10 +1,6 @@
 ---
 name: lazboy-java-coding-standards
-description: >
-  Coding standards for readable, maintainable Java 17+ in Spring Boot services. Use
-  this skill when writing or reviewing Java code, enforcing naming conventions,
-  immutability, exception handling, Optional/streams usage, or structuring packages.
-  Triggers on any Java development, code review, or Spring Boot project work.
+description: "Coding standards for readable, maintainable Java 17+ in Spring Boot services. Use this skill when writing or reviewing Java code, enforcing naming conventions, immutability, exception handling, Optional/streams usage, or structuring packages. Triggers on any Java development, code review, or Spring Boot project work."
 version: "1.0.0"
 category: Code Quality
 tags: [java, spring-boot, coding-standards, records, streams, testing]

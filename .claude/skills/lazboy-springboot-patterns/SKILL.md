@@ -1,10 +1,6 @@
 ---
 name: lazboy-springboot-patterns
-description: >
-  Spring Boot patterns for REST APIs, layered services, data access, caching, and
-  async processing. Use this skill when building REST APIs with Spring MVC or WebFlux,
-  structuring controller-service-repository layers, configuring Spring Data JPA, caching,
-  async processing, validation, exception handling, pagination, or production profiles.
+description: "Spring Boot patterns for REST APIs, layered services, data access, caching, and async processing. Use this skill when building REST APIs with Spring MVC or WebFlux, structuring controller-service-repository layers, configuring Spring Data JPA, caching, async processing, validation, exception handling, pagination, or production profiles."
 version: "1.0.0"
 category: Backend
 tags: [java, spring-boot, rest-api, jpa, caching, microservices]

@@ -1,10 +1,6 @@
 ---
 name: lazboy-python-patterns
-description: >
-  Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust
-  Python applications. Use this skill when writing new Python code, reviewing Python code,
-  refactoring existing Python code, or designing Python packages and modules. Triggers on
-  any Python development, type annotation questions, or project structure decisions.
+description: "Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust Python applications. Use this skill when writing new Python code, reviewing Python code, refactoring existing Python code, or designing Python packages and modules. Triggers on any Python development, type annotation questions, or project structure decisions."
 version: "1.0.0"
 category: Backend
 tags: [python, type-hints, pep8, patterns, testing, async]

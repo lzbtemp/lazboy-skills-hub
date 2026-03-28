@@ -1,11 +1,6 @@
 ---
 name: lazboy-security-review
-description: >
-  Comprehensive security review checklist for web applications. Use this skill
-  whenever implementing authentication, handling user input, creating API endpoints,
-  working with secrets, implementing payments, storing sensitive data, or integrating
-  third-party APIs. Trigger on: security audit, vulnerability check, pre-deployment
-  review, or any code that touches auth, input validation, or data exposure.
+description: "Comprehensive security review checklist for web applications. Use this skill whenever implementing authentication, handling user input, creating API endpoints, working with secrets, implementing payments, storing sensitive data, or integrating third-party APIs. Trigger on: security audit, vulnerability check, pre-deployment review, or any code that touches auth, input validation, or data exposure."
 version: "1.0.0"
 category: Security
 tags: [security, authentication, authorization, xss, csrf, owasp]
