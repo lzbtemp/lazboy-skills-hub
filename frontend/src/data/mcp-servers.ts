@@ -29,6 +29,8 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['-y', '@modelcontextprotocol/server-postgres', 'postgresql://user:password@localhost:5432/mydb'],
     },
+    popular: true,
+    usedBy: ['Data Science', 'Platform Engineering'],
   },
   {
     id: 'playwright-mcp',
@@ -80,6 +82,8 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['@playwright/mcp@latest'],
     },
+    popular: true,
+    usedBy: ['QA Engineering', 'Frontend'],
   },
   {
     id: 'github-mcp',
@@ -140,6 +144,8 @@ const mcpServers: McpServer[] = [
       args: ['-y', '@modelcontextprotocol/server-github'],
       env: { GITHUB_PERSONAL_ACCESS_TOKEN: '<your-token>' },
     },
+    popular: true,
+    usedBy: ['Platform Engineering', 'Full Stack'],
   },
   {
     id: 's3-mcp',
@@ -220,6 +226,8 @@ const mcpServers: McpServer[] = [
         SLACK_TEAM_ID: 'T01234567',
       },
     },
+    popular: true,
+    usedBy: ['All Teams'],
   },
   {
     id: 'ldap-mcp',
@@ -314,6 +322,8 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['-y', '@modelcontextprotocol/server-filesystem', '/path/to/allowed/dir'],
     },
+    popular: true,
+    usedBy: ['All Teams'],
   },
   {
     id: 'memory',
@@ -352,6 +362,8 @@ const mcpServers: McpServer[] = [
       args: ['-y', '@modelcontextprotocol/server-memory'],
       env: { MEMORY_FILE_PATH: '/path/to/memory.jsonl' },
     },
+    popular: true,
+    usedBy: ['Data Science', 'Full Stack'],
   },
   {
     id: 'sequential-thinking',
@@ -442,6 +454,8 @@ const mcpServers: McpServer[] = [
       args: ['-y', '@brave/brave-search-mcp-server'],
       env: { BRAVE_API_KEY: '<your-brave-api-key>' },
     },
+    popular: true,
+    usedBy: ['Full Stack', 'Data Science'],
   },
   {
     id: 'context7',
@@ -471,6 +485,8 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['-y', '@upstash/context7-mcp@latest'],
     },
+    popular: true,
+    usedBy: ['Full Stack', 'Frontend'],
   },
   {
     id: 'mongodb',
@@ -551,6 +567,7 @@ const mcpServers: McpServer[] = [
       args: ['-y', '@notionhq/notion-mcp-server'],
       env: { NOTION_TOKEN: 'ntn_<your-notion-token>' },
     },
+    usedBy: ['Product', 'Engineering'],
   },
   {
     id: 'figma',
@@ -587,6 +604,7 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['-y', 'figma-developer-mcp', '--figma-api-key=<your-key>', '--stdio'],
     },
+    usedBy: ['Design', 'Frontend'],
   },
   {
     id: 'sentry',
@@ -623,6 +641,8 @@ const mcpServers: McpServer[] = [
       args: ['-y', '@sentry/mcp-server'],
       env: { SENTRY_AUTH_TOKEN: '<your-sentry-token>' },
     },
+    popular: true,
+    usedBy: ['Platform Engineering', 'QA Engineering'],
   },
   {
     id: 'supabase',
@@ -799,6 +819,8 @@ const mcpServers: McpServer[] = [
       command: 'npx',
       args: ['-y', 'kubernetes-mcp-server'],
     },
+    popular: true,
+    usedBy: ['DevOps', 'Platform Engineering'],
   },
 ];
 

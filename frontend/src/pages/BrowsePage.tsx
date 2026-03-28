@@ -122,7 +122,7 @@ export default function BrowsePage() {
       <div className="mb-8 animate-fade-in-up">
         <h1 className="text-4xl lg:text-5xl font-bold text-[#1B3A6B] tracking-tight mb-2">Browse</h1>
         {subtitle && (
-          <p className="text-sm text-[#2C2C2C]/35 font-light">
+          <p className="text-sm text-[#2C2C2C]/60 font-medium">
             {subtitle}
             {category && <span className="text-[#1B3A6B]/60 ml-1">in selected category</span>}
           </p>
@@ -130,7 +130,7 @@ export default function BrowsePage() {
       </div>
 
       {/* Top-level tabs */}
-      <div className="flex gap-1 mb-8 bg-gray-100/60 rounded-xl p-1 w-fit animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+      <div className="flex gap-1 mb-8 bg-white/40 backdrop-blur-sm rounded-xl p-1 w-fit border border-[#1B3A6B]/[0.05] animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
@@ -139,8 +139,8 @@ export default function BrowsePage() {
               onClick={() => updateParams({ tab: tab.id, page: '1', category: '', q: '' })}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? 'bg-white text-[#1B3A6B] shadow-sm'
-                  : 'text-[#2C2C2C]/45 hover:text-[#2C2C2C]/70'
+                  ? 'bg-white/80 backdrop-blur-sm text-[#1B3A6B] shadow-sm shadow-[#1B3A6B]/[0.08] border border-[#1B3A6B]/[0.06]'
+                  : 'text-[#2C2C2C]/45 hover:text-[#2C2C2C]/70 hover:bg-white/30'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -154,7 +154,7 @@ export default function BrowsePage() {
       {activeTab === 'skills' && (
         <div className="flex gap-10">
           <aside className="hidden lg:block w-60 shrink-0">
-            <div className="bg-gradient-to-b from-white to-[#FAF8F5]/80 rounded-2xl border border-gray-100 p-5 sticky top-24">
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl border border-[#1B3A6B]/[0.06] p-5 sticky top-24 shadow-sm shadow-[#1B3A6B]/[0.03]">
               <FilterPanel
                 selectedCategory={category}
                 onCategoryChange={(slug) => updateParams({ category: slug })}
@@ -215,7 +215,7 @@ export default function BrowsePage() {
       {activeTab === 'mcp-servers' && (
         <div className="flex gap-10">
           <aside className="hidden lg:block w-60 shrink-0">
-            <div className="bg-gradient-to-b from-white to-[#FAF8F5]/80 rounded-2xl border border-gray-100 p-5 sticky top-24">
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl border border-[#1B3A6B]/[0.06] p-5 sticky top-24 shadow-sm shadow-[#1B3A6B]/[0.03]">
               <FilterPanel
                 selectedCategory={category}
                 onCategoryChange={(slug) => updateParams({ category: slug })}
@@ -259,7 +259,7 @@ export default function BrowsePage() {
       {activeTab === 'tools' && (
         <div className="flex gap-10">
           <aside className="hidden lg:block w-60 shrink-0">
-            <div className="bg-gradient-to-b from-white to-[#FAF8F5]/80 rounded-2xl border border-gray-100 p-5 sticky top-24">
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl border border-[#1B3A6B]/[0.06] p-5 sticky top-24 shadow-sm shadow-[#1B3A6B]/[0.03]">
               <FilterPanel
                 selectedCategory={category}
                 onCategoryChange={(slug) => updateParams({ category: slug })}

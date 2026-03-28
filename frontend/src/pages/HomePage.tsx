@@ -2,12 +2,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 import {
   Search, ArrowRight, Server, Layers, Monitor,
-  Brain, Palette, Settings, TestTube2, ShieldCheck, Wrench
+  Brain, Palette, Settings, TestTube2, ShieldCheck, Wrench,
+  Blocks, MousePointerClick, Copy, Rocket, ChevronDown
 } from 'lucide-react';
 import { useSkills } from '../hooks/useSkills';
 import SkillGrid from '../components/skills/SkillGrid';
 import McpGrid from '../components/mcp/McpGrid';
 import ToolGrid from '../components/tools/ToolGrid';
+import ScrollReveal from '../components/common/ScrollReveal';
 import mcpServers from '../data/mcp-servers';
 import allTools from '../data/tools';
 import { SplineScene } from '@/components/ui/splite';
@@ -29,6 +31,7 @@ const ROLES = [
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [showGetStarted, setShowGetStarted] = useState(false);
 
   const handleRoleClick = (slug: string) => {
     const isActive = selectedRole === slug;
@@ -40,6 +43,10 @@ export default function HomePage() {
 
   const featuredMcp = useMemo(() => mcpServers.slice(0, 6), []);
   const popularTools = useMemo(() => allTools.slice(0, 6), []);
+
+  const skillCount = featuredSkills?.total ?? 0;
+  const mcpCount = mcpServers.length;
+  const toolCount = allTools.length;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,93 +130,176 @@ export default function HomePage() {
 
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
-        {/* Role Selector */}
-        <section className="mb-20 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-          <div className="flex items-center gap-3 mb-8">
-            <Settings className="w-5 h-5 text-[#2C2C2C]/40" />
-            <h2 className="text-sm font-bold text-[#2C2C2C]/60 uppercase tracking-[0.15em]">I am a...</h2>
+      {/* Stats Bar */}
+      <div className="bg-white/60 backdrop-blur-xl border-b border-[#1B3A6B]/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-center gap-6 sm:gap-10 animate-fade-in-up">
+            <Link to="/browse?tab=skills" className="group flex flex-col items-center gap-0.5 px-6 py-2 rounded-2xl bg-white/40 backdrop-blur-sm border border-[#1B3A6B]/[0.04] hover:bg-white/70 hover:border-[#1B3A6B]/[0.1] hover:shadow-lg hover:shadow-[#1B3A6B]/[0.06] transition-all duration-300">
+              <div className="flex items-center gap-2">
+                <Blocks className="w-4 h-4 text-[#1B3A6B]/50" />
+                <span className="text-2xl sm:text-3xl font-bold text-[#1B3A6B]">{skillCount}</span>
+              </div>
+              <span className="text-xs text-[#2C2C2C]/40 font-medium uppercase tracking-wider group-hover:text-[#1B3A6B] transition-colors">Skills</span>
+            </Link>
+            <Link to="/browse?tab=mcp-servers" className="group flex flex-col items-center gap-0.5 px-6 py-2 rounded-2xl bg-white/40 backdrop-blur-sm border border-[#1B3A6B]/[0.04] hover:bg-white/70 hover:border-[#1B3A6B]/[0.1] hover:shadow-lg hover:shadow-[#1B3A6B]/[0.06] transition-all duration-300">
+              <div className="flex items-center gap-2">
+                <Server className="w-4 h-4 text-[#8FAF8A]/70" />
+                <span className="text-2xl sm:text-3xl font-bold text-[#1B3A6B]">{mcpCount}</span>
+              </div>
+              <span className="text-xs text-[#2C2C2C]/40 font-medium uppercase tracking-wider group-hover:text-[#1B3A6B] transition-colors">MCP Servers</span>
+            </Link>
+            <Link to="/browse?tab=tools" className="group flex flex-col items-center gap-0.5 px-6 py-2 rounded-2xl bg-white/40 backdrop-blur-sm border border-[#1B3A6B]/[0.04] hover:bg-white/70 hover:border-[#1B3A6B]/[0.1] hover:shadow-lg hover:shadow-[#1B3A6B]/[0.06] transition-all duration-300">
+              <div className="flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-[#C0392B]/50" />
+                <span className="text-2xl sm:text-3xl font-bold text-[#1B3A6B]">{toolCount}+</span>
+              </div>
+              <span className="text-xs text-[#2C2C2C]/40 font-medium uppercase tracking-wider group-hover:text-[#1B3A6B] transition-colors">Tools</span>
+            </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {ROLES.map((role) => {
-              const isActive = selectedRole === role.slug;
-              return (
-                <button
-                  key={role.label}
-                  onClick={() => handleRoleClick(role.slug)}
-                  className={`group flex flex-col items-center gap-3 px-4 py-6 rounded-xl border-2 transition-all duration-200 ${
-                    isActive
-                      ? 'bg-[#1B3A6B] border-[#1B3A6B] text-white shadow-lg shadow-[#1B3A6B]/20'
-                      : 'bg-white border-gray-200 text-[#2C2C2C] hover:border-[#1B3A6B]/30 hover:shadow-md'
-                  }`}
-                >
-                  <role.icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-[#2C2C2C]/50 group-hover:text-[#1B3A6B]'} transition-colors`} />
-                  <span className={`text-xs font-bold tracking-wide ${isActive ? 'text-white' : 'text-[#2C2C2C]/70'}`}>
-                    {role.label}
-                  </span>
-                </button>
-              );
-            })}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 lg:pb-20">
+        {/* How to Use — Collapsible */}
+        <section className={`${showGetStarted ? 'mb-16' : 'mb-8'} animate-fade-in-up transition-all duration-300`} style={{ animationDelay: '0.1s' }}>
+          <button
+            onClick={() => setShowGetStarted(!showGetStarted)}
+            className="w-full flex items-center gap-3 group cursor-pointer"
+          >
+            <Rocket className="w-5 h-5 text-[#2C2C2C]/40" />
+            <h2 className="text-sm font-bold text-[#2C2C2C]/60 uppercase tracking-[0.15em]">Get Started in 3 Steps</h2>
+            <div className="flex-1 h-px bg-gray-300" />
+            <ChevronDown className={`w-5 h-5 text-[#2C2C2C]/60 transition-transform duration-300 ${showGetStarted ? 'rotate-180' : ''}`} />
+          </button>
+          <div
+            className={`grid transition-all duration-300 ease-in-out ${showGetStarted ? 'grid-rows-[1fr] opacity-100 mt-8' : 'grid-rows-[0fr] opacity-0 mt-0'}`}
+          >
+            <div className="overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="relative rounded-2xl glass-card p-6">
+                  <div className="w-10 h-10 rounded-xl bg-[#1B3A6B]/8 flex items-center justify-center mb-4">
+                    <Search className="w-5 h-5 text-[#1B3A6B]" />
+                  </div>
+                  <div className="text-[10px] font-bold text-[#1B3A6B]/30 uppercase tracking-wider mb-2">Step 1</div>
+                  <h3 className="text-base font-bold text-[#2C2C2C] mb-2">Find a Resource</h3>
+                  <p className="text-sm text-[#2C2C2C]/50 leading-relaxed">Browse skills, MCP servers, or tools. Use search or filter by your role.</p>
+                </div>
+                <div className="relative rounded-2xl glass-card p-6">
+                  <div className="w-10 h-10 rounded-xl bg-[#8FAF8A]/12 flex items-center justify-center mb-4">
+                    <Copy className="w-5 h-5 text-[#8FAF8A]" />
+                  </div>
+                  <div className="text-[10px] font-bold text-[#8FAF8A]/50 uppercase tracking-wider mb-2">Step 2</div>
+                  <h3 className="text-base font-bold text-[#2C2C2C] mb-2">Copy or Install</h3>
+                  <p className="text-sm text-[#2C2C2C]/50 leading-relaxed">Copy the install command for skills, grab JSON config for MCP servers, or find the right tool.</p>
+                </div>
+                <div className="relative rounded-2xl glass-card p-6">
+                  <div className="w-10 h-10 rounded-xl bg-[#C0392B]/8 flex items-center justify-center mb-4">
+                    <MousePointerClick className="w-5 h-5 text-[#C0392B]" />
+                  </div>
+                  <div className="text-[10px] font-bold text-[#C0392B]/40 uppercase tracking-wider mb-2">Step 3</div>
+                  <h3 className="text-base font-bold text-[#2C2C2C] mb-2">Paste & Go</h3>
+                  <p className="text-sm text-[#2C2C2C]/50 leading-relaxed">Add skills to your CLAUDE.md, paste MCP config into your AI agent, and start building.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
+        {/* Role Selector */}
+        <ScrollReveal delay={0.05}>
+          <section className="mb-10">
+            <div className="flex items-center gap-3 mb-8">
+              <Settings className="w-5 h-5 text-[#2C2C2C]/40" />
+              <h2 className="text-sm font-bold text-[#2C2C2C]/60 uppercase tracking-[0.15em]">I am a...</h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {ROLES.map((role) => {
+                const isActive = selectedRole === role.slug;
+                return (
+                  <button
+                    key={role.label}
+                    onClick={() => handleRoleClick(role.slug)}
+                    className={`group flex flex-col items-center gap-3 px-4 py-6 rounded-xl transition-all duration-250 ${
+                      isActive
+                        ? 'bg-[#1B3A6B] border-2 border-[#1B3A6B] text-white shadow-lg shadow-[#1B3A6B]/20 scale-[1.02]'
+                        : 'bg-white/50 backdrop-blur-sm border-2 border-[#1B3A6B]/[0.06] text-[#2C2C2C] hover:bg-white/80 hover:border-[#1B3A6B]/20 hover:shadow-md hover:shadow-[#1B3A6B]/[0.08]'
+                    }`}
+                  >
+                    <role.icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-[#2C2C2C]/50 group-hover:text-[#1B3A6B]'} transition-colors`} />
+                    <span className={`text-xs font-bold tracking-wide ${isActive ? 'text-white' : 'text-[#2C2C2C]/70'}`}>
+                      {role.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        </ScrollReveal>
+
         {/* Latest Skills */}
         {featuredSkills && featuredSkills.data.length > 0 && (
-          <section className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-4">
-                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Latest Skills</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-[#1B3A6B]/15 to-transparent" />
+          <ScrollReveal>
+            <section className="mb-16">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                  <Blocks className="w-5 h-5 text-[#1B3A6B]/60" />
+                  <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Latest Skills</h2>
+                  <div className="flex-1 h-px bg-gradient-to-r from-[#1B3A6B]/15 to-transparent" />
+                </div>
+                <Link
+                  to="/browse?tab=skills"
+                  className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
+                >
+                  View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
-              <Link
-                to="/browse?tab=skills"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
-              >
-                View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-            <SkillGrid skills={featuredSkills.data} />
-          </section>
+              <SkillGrid skills={featuredSkills.data} />
+            </section>
+          </ScrollReveal>
         )}
 
         {/* Featured MCP Servers */}
         {featuredMcp.length > 0 && (
-          <section className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-4">
-                <Server className="w-5 h-5 text-[#8FAF8A]" />
-                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Featured MCP Servers</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-[#8FAF8A]/25 to-transparent" />
+          <ScrollReveal delay={0.1}>
+            <section className="mb-16">
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                  <Server className="w-5 h-5 text-[#8FAF8A]" />
+                  <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Featured MCP Servers</h2>
+                  <div className="flex-1 h-px bg-gradient-to-r from-[#8FAF8A]/25 to-transparent" />
+                </div>
+                <Link
+                  to="/browse?tab=mcp-servers"
+                  className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
+                >
+                  View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
-              <Link
-                to="/browse?tab=mcp-servers"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
-              >
-                View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-            <McpGrid servers={featuredMcp} />
-          </section>
+              <McpGrid servers={featuredMcp} />
+            </section>
+          </ScrollReveal>
         )}
 
         {/* Popular Tools */}
         {popularTools.length > 0 && (
-          <section className="animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-4">
-                <Wrench className="w-5 h-5 text-[#C0392B]/60" />
-                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Popular Tools</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-[#C0392B]/15 to-transparent" />
+          <ScrollReveal delay={0.2}>
+            <section>
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                  <Wrench className="w-5 h-5 text-[#C0392B]/60" />
+                  <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Popular Tools</h2>
+                  <div className="flex-1 h-px bg-gradient-to-r from-[#C0392B]/15 to-transparent" />
+                </div>
+                <Link
+                  to="/browse?tab=tools"
+                  className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
+                >
+                  View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
-              <Link
-                to="/browse?tab=tools"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
-              >
-                View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-            <ToolGrid tools={popularTools} />
-          </section>
+              <ToolGrid tools={popularTools} />
+            </section>
+          </ScrollReveal>
         )}
       </div>
     </div>

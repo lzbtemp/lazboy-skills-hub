@@ -1,10 +1,21 @@
 import { PackageOpen } from 'lucide-react';
+import { motion } from 'motion/react';
 import type { SkillListItem } from '../../types';
 import SkillCard from './SkillCard';
 
 interface Props {
   skills: SkillListItem[];
 }
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+};
 
 export default function SkillGrid({ skills }: Props) {
   if (skills.length === 0) {
@@ -20,12 +31,18 @@ export default function SkillGrid({ skills }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      {skills.map((skill, i) => (
-        <div key={skill.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.08}s` }}>
+    <motion.div
+      key={skills.map((s) => s.id).join(',')}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      {skills.map((skill) => (
+        <motion.div key={skill.id} variants={itemVariants}>
           <SkillCard skill={skill} />
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

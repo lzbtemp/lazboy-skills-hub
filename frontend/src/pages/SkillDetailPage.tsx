@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Tag as TagIcon, User, ChevronRight, Package } from 'lucide-react';
+import { Tag as TagIcon, User, ChevronRight, Package, Blocks, Download, Calendar } from 'lucide-react';
 import { fetchSkillBySlug } from '../api/github';
 import SkillContentViewer from '../components/skills/SkillContentViewer';
 import InstallInstructions from '../components/skills/InstallInstructions';
@@ -24,7 +24,7 @@ export default function SkillDetailPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12 text-center animate-fade-in">
         <p className="text-[#C0392B] text-lg">Skill not found</p>
-        <Link to="/browse" className="text-[#1B3A6B] hover:underline mt-4 inline-block">
+        <Link to="/browse?tab=skills" className="text-[#1B3A6B] hover:underline mt-4 inline-block">
           Back to Browse
         </Link>
       </div>
@@ -35,7 +35,6 @@ export default function SkillDetailPage() {
     <div className="animate-fade-in">
       {/* Gradient hero header */}
       <div className="relative bg-gradient-to-br from-[#1B3A6B] via-[#152f58] to-[#1B3A6B]/90 overflow-hidden">
-        {/* Decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute w-48 h-48 rounded-full border border-white/[0.04]" style={{ top: '-10%', right: '10%' }} />
           <div className="absolute w-32 h-32 rounded-full bg-[#8FAF8A]/[0.04]" style={{ bottom: '10%', left: '5%' }} />
@@ -47,7 +46,7 @@ export default function SkillDetailPage() {
           <nav className="flex items-center gap-1.5 text-sm text-white/35 mb-8">
             <Link to="/" className="hover:text-white/70 transition-colors">Home</Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <Link to="/browse" className="hover:text-white/70 transition-colors">Browse</Link>
+            <Link to="/browse?tab=skills" className="hover:text-white/70 transition-colors">Skills</Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-white/60 truncate">{skill.name}</span>
           </nav>
@@ -60,6 +59,9 @@ export default function SkillDetailPage() {
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-white tracking-tight">{skill.name}</h1>
                 <span className="text-xs text-white/30 bg-white/[0.08] px-2.5 py-0.5 rounded-full backdrop-blur-sm">v{skill.version}</span>
+                <span className="text-[10px] font-semibold text-white/70 bg-[#1B3A6B]/40 px-2.5 py-0.5 rounded-full uppercase tracking-wider border border-white/10">
+                  Skill
+                </span>
               </div>
               <p className="text-white text-base font-normal line-clamp-3 max-w-2xl leading-relaxed">{skill.description}</p>
               <div className="flex items-center gap-5 text-sm text-white/40 mt-4">
@@ -73,6 +75,10 @@ export default function SkillDetailPage() {
                 >
                   {skill.category.name}
                 </Link>
+                <span className="inline-flex items-center gap-1.5 text-white/30">
+                  <Download className="w-3.5 h-3.5" />
+                  {skill.install_count} installs
+                </span>
               </div>
             </div>
           </div>
@@ -108,6 +114,43 @@ export default function SkillDetailPage() {
           <aside className="w-full lg:w-72 shrink-0">
             <div className="sticky top-24 space-y-4">
               <InstallInstructions slug={skill.slug} content={skill.content} />
+
+              {/* Details card */}
+              <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <h3 className="text-sm font-bold text-[#2C2C2C]/60 uppercase tracking-wider mb-4">Details</h3>
+                <dl className="space-y-4 text-sm">
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Category</dt>
+                    <dd className="text-[#2C2C2C]/80 font-medium">{skill.category.name}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Author</dt>
+                    <dd className="text-[#2C2C2C]/80 font-medium">{skill.author.display_name || skill.author.username}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Type</dt>
+                    <dd className="inline-flex items-center gap-1.5 text-[#1B3A6B] font-medium">
+                      <Blocks className="w-3.5 h-3.5" />
+                      Skill
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Version</dt>
+                    <dd className="text-[#2C2C2C]/80 font-medium">v{skill.version}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Installs</dt>
+                    <dd className="text-[#2C2C2C]/80 font-medium">{skill.install_count}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[#2C2C2C]/35 text-xs uppercase tracking-wider mb-1">Published</dt>
+                    <dd className="text-[#2C2C2C]/80 font-medium">
+                      {new Date(skill.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
               <FileExplorer skillSlug={skill.slug} />
             </div>
           </aside>

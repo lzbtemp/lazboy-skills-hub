@@ -102,4 +102,6 @@ export interface McpServer {
   source?: string;
   npmPackage?: string;
   config?: McpConfig;
+  popular?: boolean;
+  usedBy?: string[];
 }

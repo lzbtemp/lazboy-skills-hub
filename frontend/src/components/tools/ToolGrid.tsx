@@ -1,10 +1,21 @@
 import { Wrench } from 'lucide-react';
+import { motion } from 'motion/react';
 import type { FlatTool } from '../../types';
 import ToolCard from './ToolCard';
 
 interface Props {
   tools: FlatTool[];
 }
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+};
 
 export default function ToolGrid({ tools }: Props) {
   if (tools.length === 0) {
@@ -20,12 +31,18 @@ export default function ToolGrid({ tools }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      {tools.map((tool, i) => (
-        <div key={`${tool.serverSlug}-${tool.name}`} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.04}s` }}>
+    <motion.div
+      key={tools.map((t) => `${t.serverSlug}-${t.name}`).join(',')}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      {tools.map((tool) => (
+        <motion.div key={`${tool.serverSlug}-${tool.name}`} variants={itemVariants}>
           <ToolCard tool={tool} />
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
