@@ -1,11 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Search, ArrowRight, Server, Layers, Monitor,
-  Brain, Palette, Settings, TestTube2, ShieldCheck
+  Brain, Palette, Settings, TestTube2, ShieldCheck, Wrench
 } from 'lucide-react';
 import { useSkills } from '../hooks/useSkills';
 import SkillGrid from '../components/skills/SkillGrid';
+import McpGrid from '../components/mcp/McpGrid';
+import ToolGrid from '../components/tools/ToolGrid';
+import mcpServers from '../data/mcp-servers';
+import allTools from '../data/tools';
 import { SplineScene } from '@/components/ui/splite';
 import { Spotlight } from '@/components/ui/spotlight';
 import { Typewriter } from '@/components/ui/typewriter-text';
@@ -33,6 +37,9 @@ export default function HomePage() {
   };
   const navigate = useNavigate();
   const { data: featuredSkills } = useSkills({ perPage: 6, sort: 'newest' });
+
+  const featuredMcp = useMemo(() => mcpServers.slice(0, 6), []);
+  const popularTools = useMemo(() => allTools.slice(0, 6), []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,22 +153,62 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Featured Skills */}
+        {/* Latest Skills */}
         {featuredSkills && featuredSkills.data.length > 0 && (
-          <section className="animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+          <section className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
             <div className="flex items-center justify-between mb-10">
               <div className="flex items-center gap-4">
-                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Latest</h2>
+                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Latest Skills</h2>
                 <div className="flex-1 h-px bg-gradient-to-r from-[#1B3A6B]/15 to-transparent" />
               </div>
               <Link
-                to="/browse"
+                to="/browse?tab=skills"
                 className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
               >
                 View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
             <SkillGrid skills={featuredSkills.data} />
+          </section>
+        )}
+
+        {/* Featured MCP Servers */}
+        {featuredMcp.length > 0 && (
+          <section className="mb-16 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center gap-4">
+                <Server className="w-5 h-5 text-[#8FAF8A]" />
+                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Featured MCP Servers</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-[#8FAF8A]/25 to-transparent" />
+              </div>
+              <Link
+                to="/browse?tab=mcp-servers"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
+              >
+                View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            <McpGrid servers={featuredMcp} />
+          </section>
+        )}
+
+        {/* Popular Tools */}
+        {popularTools.length > 0 && (
+          <section className="animate-fade-in-up" style={{ animationDelay: '0.45s' }}>
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center gap-4">
+                <Wrench className="w-5 h-5 text-[#C0392B]/60" />
+                <h2 className="text-3xl font-bold text-[#1B3A6B] tracking-tight">Popular Tools</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-[#C0392B]/15 to-transparent" />
+              </div>
+              <Link
+                to="/browse?tab=tools"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-[#C0392B] hover:text-[#C0392B]/80 transition-colors"
+              >
+                View all <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            <ToolGrid tools={popularTools} />
           </section>
         )}
       </div>

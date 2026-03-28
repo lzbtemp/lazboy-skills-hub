@@ -66,6 +66,17 @@ The distinctive "L", "Z", and hyphens are signature elements and must never be a
 - Minimum size: 72px wide (digital) / 1 inch wide (print)
 - Recommended sizes: header `h-10` (40px height), footer `h-8` (32px height)
 - Do NOT place the logo in hero banners — it duplicates the header logo
+- Do NOT repeat the logo in the footer — keep it in the header only
+
+### Favicon
+Use the official La-Z-Boy favicon from the corporate site:
+```bash
+curl -sL "https://www.la-z-boy.com/favicon.ico" -o public/favicon.ico
+```
+Reference in HTML:
+```html
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+```
 
 > Read `references/logo-assets.md` for download steps, approved variants, file formats, and how to request assets from Marketing.
 
@@ -221,6 +232,18 @@ Use `python-pptx` or the available file-creation tool. Apply these styles:
 - CTA buttons: Burnt Vermilion (`#C0392B`), white label text, 4px border-radius
 - Footer: Charcoal text on Warm White background
 - Max width: 600px
+
+### Footer
+Keep footers minimal — do not duplicate navigation links already in the header/nav.
+```
+Pattern: Copyright (left) | Social icons (right)
+```
+- Background: Comfort Blue (`#1B3A6B`)
+- Text: `text-sm text-white/80` for copyright
+- Social icons: `w-5 h-5 text-white/50 hover:text-white` with SVG icons for Facebook, Instagram, Pinterest
+- Do NOT include the logo in the footer
+- Do NOT add link columns (Explore, Resources, etc.) — these duplicate the main navigation
+- Do NOT include the tagline in the footer
 
 ### Design Tokens (Tailwind / Figma / Style Dictionary)
 - Use `assets/brand-tokens.json` — import directly into your config
