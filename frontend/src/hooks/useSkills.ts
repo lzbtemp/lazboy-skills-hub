@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllSkills } from '../api/github';
+import { createLogger } from '../lib/logger';
 import type { PaginatedResponse, SkillListItem } from '../types';
+
+const log = createLogger('hook:useSkills');
 
 interface UseSkillsParams {
   page?: number;
@@ -14,6 +17,7 @@ export function useSkills({ page = 1, perPage = 20, category, tag, sort = 'newes
   return useQuery({
     queryKey: ['skills', { page, perPage, category, tag, sort }],
     queryFn: async (): Promise<PaginatedResponse<SkillListItem>> => {
+      log.debug('Fetching skills', { page, category, tag, sort });
       let skills = await fetchAllSkills();
 
       if (category) {
@@ -34,6 +38,7 @@ export function useSkills({ page = 1, perPage = 20, category, tag, sort = 'newes
       const start = (page - 1) * perPage;
       const data = skills.slice(start, start + perPage);
 
+      log.info('Skills query resolved', { total, page, totalPages, returned: data.length });
       return { data, page, per_page: perPage, total, total_pages: totalPages };
     },
   });

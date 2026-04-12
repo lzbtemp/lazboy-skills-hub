@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, QueryCache, MutationCache } from '@tanstack/react-query';
+import { createLogger } from './lib/logger';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
@@ -10,7 +11,24 @@ import MarketplacePage from './pages/MarketplacePage';
 import MarketplaceDetailPage from './pages/MarketplaceDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 
+const log = createLogger('app');
+
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      log.error('Query failed', {
+        queryKey: JSON.stringify(query.queryKey),
+        error: error instanceof Error ? error.message : String(error),
+      });
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      log.error('Mutation failed', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5,
