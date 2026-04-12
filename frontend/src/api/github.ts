@@ -1,4 +1,8 @@
-const GITHUB_ORG = 'lzbtemp';
+import { createLogger } from '../lib/logger';
+
+const log = createLogger('api:github');
+
+const GITHUB_ORG = 'LZBRetail';
 const GITHUB_REPO = 'lazboy-agent-skills';
 const GITHUB_BRANCH = 'main';
 const SKILLS_PATH = 'skills';
@@ -78,16 +82,22 @@ function deriveTags(skillName: string, description: string): string[] {
 }
 
 export async function fetchSkillList(): Promise<string[]> {
-  const res = await fetch(`${API_BASE}/contents/${SKILLS_PATH}?ref=${GITHUB_BRANCH}`);
-  if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
-  const data: GitHubContent[] = await res.json();
-  return data.filter(item => item.type === 'dir').map(item => item.name);
+  return log.time('fetchSkillList', async () => {
+    const res = await fetch(`${API_BASE}/contents/${SKILLS_PATH}?ref=${GITHUB_BRANCH}`);
+    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+    const data: GitHubContent[] = await res.json();
+    const dirs = data.filter(item => item.type === 'dir').map(item => item.name);
+    log.info('Skill list fetched', { count: dirs.length });
+    return dirs;
+  });
 }
 
 export async function fetchSkillContent(skillName: string): Promise<string> {
-  const res = await fetch(`${RAW_BASE}/${SKILLS_PATH}/${skillName}/SKILL.md`);
-  if (!res.ok) throw new Error(`Skill not found: ${skillName}`);
-  return res.text();
+  return log.time('fetchSkillContent', async () => {
+    const res = await fetch(`${RAW_BASE}/${SKILLS_PATH}/${skillName}/SKILL.md`);
+    if (!res.ok) throw new Error(`Skill not found: ${skillName}`);
+    return res.text();
+  }, { skill: skillName });
 }
 
 export interface GitHubSkill {
@@ -159,33 +169,43 @@ function toSkill(skillName: string, markdown: string, index: number): GitHubSkil
 let skillsCache: GitHubSkill[] | null = null;
 
 export async function fetchAllSkills(): Promise<GitHubSkill[]> {
-  if (skillsCache) return skillsCache;
+  if (skillsCache) {
+    log.debug('Returning cached skills', { count: skillsCache.length });
+    return skillsCache;
+  }
 
-  const skillNames = await fetchSkillList();
-  const skills = await Promise.all(
-    skillNames.map(async (name, index) => {
-      const markdown = await fetchSkillContent(name);
-      return toSkill(name, markdown, index);
-    })
-  );
+  return log.time('fetchAllSkills', async () => {
+    const skillNames = await fetchSkillList();
+    const skills = await Promise.all(
+      skillNames.map(async (name, index) => {
+        const markdown = await fetchSkillContent(name);
+        return toSkill(name, markdown, index);
+      })
+    );
 
-  skillsCache = skills;
-  return skills;
+    skillsCache = skills;
+    log.info('All skills fetched and cached', { count: skills.length });
+    return skills;
+  });
 }
 
 export async function fetchSkillBySlug(slug: string): Promise<GitHubSkill | null> {
   const skills = await fetchAllSkills();
-  return skills.find(s => s.slug === slug) || null;
+  const skill = skills.find(s => s.slug === slug) || null;
+  if (!skill) log.warn('Skill not found by slug', { slug });
+  return skill;
 }
 
 export async function searchSkills(query: string): Promise<GitHubSkill[]> {
   const skills = await fetchAllSkills();
   const q = query.toLowerCase();
-  return skills.filter(s =>
+  const results = skills.filter(s =>
     s.name.toLowerCase().includes(q) ||
     s.description.toLowerCase().includes(q) ||
     s.tags.some(t => t.name.toLowerCase().includes(q))
   );
+  log.info('Search completed', { query, resultCount: results.length, totalSkills: skills.length });
+  return results;
 }
 
 export interface FileTreeItem {
@@ -195,35 +215,38 @@ export interface FileTreeItem {
 }
 
 export async function fetchSkillFileTree(skillName: string): Promise<FileTreeItem[]> {
-  const res = await fetch(`${API_BASE}/contents/${SKILLS_PATH}/${skillName}?ref=${GITHUB_BRANCH}`);
-  if (!res.ok) return [];
-  const items: GitHubContent[] = await res.json();
-
-  const tree: FileTreeItem[] = [];
-  for (const item of items) {
-    if (item.name === 'SKILL.md') {
-      tree.push({ name: item.name, type: 'file' });
-    } else if (item.type === 'dir') {
-      // Fetch subdirectory contents
-      const subRes = await fetch(`${API_BASE}/contents/${item.path}?ref=${GITHUB_BRANCH}`);
-      const subItems: GitHubContent[] = subRes.ok ? await subRes.json() : [];
-      tree.push({
-        name: item.name,
-        type: 'dir',
-        children: subItems.map(sub => ({ name: sub.name, type: sub.type })),
-      });
-    } else {
-      tree.push({ name: item.name, type: 'file' });
+  return log.time('fetchSkillFileTree', async () => {
+    const res = await fetch(`${API_BASE}/contents/${SKILLS_PATH}/${skillName}?ref=${GITHUB_BRANCH}`);
+    if (!res.ok) {
+      log.warn('File tree fetch failed', { skill: skillName, status: res.status });
+      return [];
     }
-  }
+    const items: GitHubContent[] = await res.json();
 
-  // Sort: directories first, then files
-  tree.sort((a, b) => {
-    if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
-    return a.name.localeCompare(b.name);
-  });
+    const tree: FileTreeItem[] = [];
+    for (const item of items) {
+      if (item.name === 'SKILL.md') {
+        tree.push({ name: item.name, type: 'file' });
+      } else if (item.type === 'dir') {
+        const subRes = await fetch(`${API_BASE}/contents/${item.path}?ref=${GITHUB_BRANCH}`);
+        const subItems: GitHubContent[] = subRes.ok ? await subRes.json() : [];
+        tree.push({
+          name: item.name,
+          type: 'dir',
+          children: subItems.map(sub => ({ name: sub.name, type: sub.type })),
+        });
+      } else {
+        tree.push({ name: item.name, type: 'file' });
+      }
+    }
 
-  return tree;
+    tree.sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    return tree;
+  }, { skill: skillName });
 }
 
 // ── Marketplace: External skill sources ──
@@ -267,43 +290,51 @@ const marketplaceCache = new Map<string, MarketplaceSkill[]>();
 
 export async function fetchMarketplaceSkills(source: MarketplaceSource): Promise<MarketplaceSkill[]> {
   const cacheKey = `${source.org}/${source.repo}`;
-  if (marketplaceCache.has(cacheKey)) return marketplaceCache.get(cacheKey)!;
+  if (marketplaceCache.has(cacheKey)) {
+    log.debug('Returning cached marketplace skills', { source: cacheKey });
+    return marketplaceCache.get(cacheKey)!;
+  }
 
-  const apiBase = `https://api.github.com/repos/${source.org}/${source.repo}`;
-  const rawBase = `https://raw.githubusercontent.com/${source.org}/${source.repo}/main`;
+  return log.time('fetchMarketplaceSkills', async () => {
+    const apiBase = `https://api.github.com/repos/${source.org}/${source.repo}`;
+    const rawBase = `https://raw.githubusercontent.com/${source.org}/${source.repo}/main`;
 
-  // Fetch skill directories
-  const res = await fetch(`${apiBase}/contents/skills?ref=main`);
-  if (!res.ok) return [];
-  const items: GitHubContent[] = await res.json();
-  const dirs = items.filter(i => i.type === 'dir');
+    const res = await fetch(`${apiBase}/contents/skills?ref=main`);
+    if (!res.ok) {
+      log.warn('Marketplace source unavailable', { source: cacheKey, status: res.status });
+      return [];
+    }
+    const items: GitHubContent[] = await res.json();
+    const dirs = items.filter(i => i.type === 'dir');
 
-  // Fetch SKILL.md for each
-  const skills = await Promise.all(
-    dirs.map(async (dir): Promise<MarketplaceSkill | null> => {
-      try {
-        const mdRes = await fetch(`${rawBase}/skills/${dir.name}/SKILL.md`);
-        if (!mdRes.ok) return null;
-        const markdown = await mdRes.text();
-        const { meta } = parseFrontmatter(markdown);
-        return {
-          name: meta.name || dir.name,
-          slug: dir.name,
-          description: meta.description || '',
-          category: meta.category || 'General',
-          source,
-          githubUrl: `https://github.com/${source.org}/${source.repo}/tree/main/skills/${dir.name}`,
-          installCommand: `npx skills add https://github.com/${source.org}/${source.repo} --skill ${dir.name}`,
-        };
-      } catch {
-        return null;
-      }
-    })
-  );
+    const skills = await Promise.all(
+      dirs.map(async (dir): Promise<MarketplaceSkill | null> => {
+        try {
+          const mdRes = await fetch(`${rawBase}/skills/${dir.name}/SKILL.md`);
+          if (!mdRes.ok) return null;
+          const markdown = await mdRes.text();
+          const { meta } = parseFrontmatter(markdown);
+          return {
+            name: meta.name || dir.name,
+            slug: dir.name,
+            description: meta.description || '',
+            category: meta.category || 'General',
+            source,
+            githubUrl: `https://github.com/${source.org}/${source.repo}/tree/main/skills/${dir.name}`,
+            installCommand: `npx skills add https://github.com/${source.org}/${source.repo} --skill ${dir.name}`,
+          };
+        } catch (err) {
+          log.warn('Failed to fetch marketplace skill', { source: cacheKey, skill: dir.name, error: err instanceof Error ? err.message : String(err) });
+          return null;
+        }
+      })
+    );
 
-  const result = skills.filter((s): s is MarketplaceSkill => s !== null);
-  marketplaceCache.set(cacheKey, result);
-  return result;
+    const result = skills.filter((s): s is MarketplaceSkill => s !== null);
+    marketplaceCache.set(cacheKey, result);
+    log.info('Marketplace skills fetched', { source: cacheKey, count: result.length });
+    return result;
+  }, { source: cacheKey });
 }
 
 export async function fetchAllMarketplaceSkills(): Promise<{ source: MarketplaceSource; skills: MarketplaceSkill[] }[]> {
@@ -323,25 +354,34 @@ export interface MarketplaceSkillDetail extends MarketplaceSkill {
 export async function fetchMarketplaceSkillDetail(org: string, repo: string, skillSlug: string): Promise<MarketplaceSkillDetail | null> {
   const rawBase = `https://raw.githubusercontent.com/${org}/${repo}/main`;
   const source = MARKETPLACE_SOURCES.find(s => s.org === org && s.repo === repo);
-  if (!source) return null;
+  if (!source) {
+    log.warn('Unknown marketplace source', { org, repo });
+    return null;
+  }
 
   try {
-    const res = await fetch(`${rawBase}/skills/${skillSlug}/SKILL.md`);
-    if (!res.ok) return null;
-    const markdown = await res.text();
-    const { meta } = parseFrontmatter(markdown);
-    return {
-      name: meta.name || skillSlug,
-      slug: skillSlug,
-      description: meta.description || '',
-      category: meta.category || 'General',
-      content: markdown,
-      version: meta.version || '1.0.0',
-      source,
-      githubUrl: `https://github.com/${org}/${repo}/tree/main/skills/${skillSlug}`,
-      installCommand: `npx skills add https://github.com/${org}/${repo} --skill ${skillSlug}`,
-    };
-  } catch {
+    return await log.time('fetchMarketplaceSkillDetail', async () => {
+      const res = await fetch(`${rawBase}/skills/${skillSlug}/SKILL.md`);
+      if (!res.ok) {
+        log.warn('Marketplace skill detail not found', { org, repo, skill: skillSlug, status: res.status });
+        return null;
+      }
+      const markdown = await res.text();
+      const { meta } = parseFrontmatter(markdown);
+      return {
+        name: meta.name || skillSlug,
+        slug: skillSlug,
+        description: meta.description || '',
+        category: meta.category || 'General',
+        content: markdown,
+        version: meta.version || '1.0.0',
+        source,
+        githubUrl: `https://github.com/${org}/${repo}/tree/main/skills/${skillSlug}`,
+        installCommand: `npx skills add https://github.com/${org}/${repo} --skill ${skillSlug}`,
+      };
+    }, { org, repo, skill: skillSlug });
+  } catch (err) {
+    log.error('fetchMarketplaceSkillDetail failed', { org, repo, skill: skillSlug, error: err instanceof Error ? err.message : String(err) });
     return null;
   }
 }

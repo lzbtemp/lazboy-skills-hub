@@ -46,16 +46,16 @@ The distinctive "L", "Z", and hyphens are signature elements and must never be a
 - **Logo files are available via GitHub raw URL.** Do NOT use read/write tools to copy PNGs — binary files get corrupted. Instead, use a shell command:
   ```bash
   # Standard web header (400w) — recommended for most projects
-  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png" -o public/lazboy-logo.png
+  curl -sL "https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png" -o public/lazboy-logo.png
 
   # Compact (200w) — for sidebar, footer
-  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-200w.png" -o public/lazboy-logo.png
+  curl -sL "https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-200w.png" -o public/lazboy-logo.png
 
   # Full resolution (3168x1129) — for print/high-DPI
-  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy.png" -o public/lazboy-logo.png
+  curl -sL "https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy.png" -o public/lazboy-logo.png
 
   # Small badge (80w)
-  curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-80w.png" -o public/lazboy-logo.png
+  curl -sL "https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-80w.png" -o public/lazboy-logo.png
   ```
 - **IMPORTANT:** Always use `curl`, `cp`, or `wget` to copy logo files. Never use file read/write tools — they corrupt binary PNG data.
 - Adjust the output path (`public/`, `static/`, `src/assets/`) to match your project structure

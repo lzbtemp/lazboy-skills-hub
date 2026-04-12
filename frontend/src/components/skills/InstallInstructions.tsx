@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Check, Copy, Download, Terminal } from 'lucide-react';
 
-const RAW_BASE = 'https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills';
+const RAW_BASE = 'https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills';
 
 interface Props {
   slug: string;

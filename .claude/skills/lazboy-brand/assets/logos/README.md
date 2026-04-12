@@ -21,7 +21,7 @@ Always use `curl` or `cp` via a shell command:
 
 ```bash
 # Download from GitHub (works in any project)
-curl -sL "https://raw.githubusercontent.com/lzbtemp/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png" -o public/lazboy-logo.png
+curl -sL "https://raw.githubusercontent.com/LZBRetail/lazboy-agent-skills/main/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png" -o public/lazboy-logo.png
 
 # Or copy locally if the skill repo is cloned
 cp /path/to/lazboy-agent-skills/skills/lazboy-brand/assets/logos/lazboy-logo-navy-400w.png public/lazboy-logo.png
