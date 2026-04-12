@@ -20,7 +20,7 @@ export default function SearchBar({ value, onChange, placeholder = 'Search skill
       if (local !== value) onChange(local);
     }, 300);
     return () => clearTimeout(timer);
-  }, [local]);
+  }, [local, value, onChange]);
 
   return (
     <div className={`relative transition-all duration-300 ${focused ? 'scale-[1.01]' : ''}`}>
